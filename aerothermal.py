@@ -5,39 +5,13 @@ By: Jonathan Cats
 INSTALL:
    cantera, numpy, scipy, matplotlib, ambiance, pandas
 
-TRAJECTORY CONTRACT
-Required CSV columns: Time_s, Altitude_m, Speed_mps.
-The units in those headers are used literally: seconds, metres, metres/second.
-Speed_mps is assumed to be speed relative to the undisturbed air. This file
-has no wind model and does not convert ground/inertial speed to airspeed.
-Altitude_m is passed unchanged to the existing standard-atmosphere model;
-no geometric/geopotential or reference-datum conversion is performed.
-Time must be strictly increasing in the original CSV row order. Altitude
-need not be monotonic: climb and descent are both preserved. Nothing is
-sorted, resampled, smoothed, extrapolated, or reintegrated. All CSV samples
-are used by default. --segment descent starts at the greatest sampled
-altitude and retains every subsequent row; original times are not reset.
-
-Optional Mach, Range_km, FlightPath_deg, Alpha_deg, DynamicPressure_kPa,
-LiftLoad_g, CL, and CD columns are retained as source_* output fields.
-CSV Mach is a reference only. The heating model uses Mach = Speed_mps /
-local frozen sound speed from its existing air model. Speed_mps is never
-changed to force agreement with CSV Mach. CSV dynamic pressure, CL, CD,
-flight-path angle, and AoA do not drive another trajectory calculation.
-
-HOW TO READ THIS FILE
-1. load_trajectory_csv imports the prescribed time/altitude/speed samples.
-2. calculate_freestream_properties evaluates air at each imported altitude.
-3. solve_equilibrium_normal_shock calculates the compressed gas.
-4. solve_stagnation_edge_state calculates the gas at the nose edge.
-5. solve_wall_temperatures retains the original catalytic/noncatalytic model.
+Workflow
+1. load_trajectory_csv imports the time/altitude/speed samples.
+2. calculate_freestream_properties of air at each imported altitude (Cantera).
+3. solve_equilibrium_normal_shock: calculates the compressed gas properties (Cantera + scipy).
+4. solve_stagnation_edge_state: isentropically decelerates the post-shock gas to the stagnation-point boundary-layer edge (Cantera)
+5. solve_wall_temperatures: Fay-Riddell Radiative Equillibrium (stefan boltzman)
 6. save_results and plot_results write the profiles and figures.
-
-PHYSICS RETAINED FROM aerothermal_fixed.py
-Cantera supplies variable specific heats and equilibrium neutral-air chemistry.
-The shock conserves mass, momentum, and total energy; gas then decelerates
-isentropically to the stagnation edge. Wall heating retains the original
-Fay-Riddell-prefactor / frozen-boundary-layer film analogy. Lewis number remains 1.4.
 
 LIMITS
 200-5000 K neutral-gas model; no finite-rate chemistry, ionization, thermal
@@ -941,8 +915,11 @@ def plot_results(profile_arrays, options):
                   linestyle="--", linewidth=2, label="Noncatalytic frozen wall")
         axes.set_xlabel(x_label)
         axes.set_ylabel(vertical_axis_label)
-        axes.set_title("Variable-cp equilibrium air / frozen-boundary-layer film model\n"
-                       f"Spherical nose; prescribed CSV trajectory ({options.segment})")
+        axes.set_title(
+            "Wall Temperature vs. Time (NOT transient)"
+            if key == "wall_temperature_K_"
+            else "Stagnation Point Heat Flux vs. Time (NOT transient)"
+        )
         # Only reverse an altitude axis for a consistently descending segment.
         if not use_time and np.all(np.diff(x) <= 0) and np.any(np.diff(x) < 0):
             axes.invert_xaxis()
