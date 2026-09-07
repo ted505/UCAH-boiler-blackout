@@ -1,0 +1,103 @@
+{
+  "status": "completed",
+  "cantera_version": "3.2.0",
+  "trajectory": {
+    "source": "prescribed_csv",
+    "csv_path": "/Users/jonathancats/Documents/GitHub/UCAH-boiler-blackout/glide_result_collocation.csv",
+    "csv_sha256": "c2b300dba497a5cf805db95a3d857a59b72f526d333b8b6d995e641db9b8d924",
+    "csv_input_rows": 81,
+    "selected_rows": 81,
+    "segment": "all",
+    "first_source_csv_row": 2,
+    "last_source_csv_row": 82,
+    "maximum_altitude_source_csv_row": 41,
+    "contains_climb_and_descent": true,
+    "time_range_s": [
+      0.0,
+      161.943826497643
+    ],
+    "altitude_range_m": [
+      -9.89175134763047e-30,
+      29992.6000787009
+    ],
+    "speed_range_m_s": [
+      1015.21576846415,
+      2722.35190420871
+    ],
+    "imported_columns": {
+      "Time_s": "time_s",
+      "Altitude_m": "altitude_m",
+      "Speed_mps": "speed_m_s",
+      "Mach": "source_mach_number",
+      "Range_km": "source_range_km",
+      "FlightPath_deg": "source_flight_path_angle_deg",
+      "Alpha_deg": "source_angle_of_attack_deg",
+      "DynamicPressure_kPa": "source_dynamic_pressure_kPa",
+      "LiftLoad_g": "source_lift_load_g",
+      "CL": "source_lift_coefficient",
+      "CD": "source_drag_coefficient"
+    },
+    "unused_csv_columns": [],
+    "sample_handling": "Original time order; no sorting, interpolation, extrapolation, or speed integration.",
+    "speed_reference_assumption": "Speed_mps is freestream-relative speed, not ground/inertial speed.",
+    "altitude_handling": "Altitude_m passed unchanged to the existing atmosphere model.",
+    "mach_used_by_heating": "Imported speed / local sound speed from the existing air model."
+  },
+  "requested_samples": 81,
+  "returned_samples": 81,
+  "completed_heating_samples": 81,
+  "skipped_mach_le_1_samples": 0,
+  "model": "equilibrium neutral air + frozen-BL catalytic film analogy",
+  "species": [
+    "N2",
+    "O2",
+    "N",
+    "O",
+    "NO",
+    "NO2",
+    "N2O",
+    "Ar",
+    "CO2",
+    "CO",
+    "C"
+  ],
+  "effective_lewis_number": 1.4,
+  "catalytic_exponent": 0.63,
+  "nose_radius_m": 0.001,
+  "emissivity": 0.8,
+  "supported_temperature_K": [
+    200.0,
+    5000.0
+  ],
+  "wall_array_shape": "(trajectory_sample, single_stagnation_point)",
+  "plot_x": "time",
+  "limitations": [
+    "Input trajectory and aerodynamic model are prescribed, not validated by this script.",
+    "Time is not used to integrate material temperature: walls are in instantaneous radiative equilibrium.",
+    "No finite-rate chemistry, ionization, conduction, ablation, or incoming radiation.",
+    "Mach <= 1 rows are retained with NaN heating and an explicit skipped status."
+  ],
+  "equilibrium_retry_count": 0,
+  "max_relative_shock_error": 1.255380124890862e-09,
+  "max_relative_edge_error": 6.896098662552144e-11,
+  "max_relative_wall_error": 4.83203089346675e-07,
+  "max_absolute_mach_difference_from_csv": 0.0026016549286982382,
+  "peak_fully_catalytic": {
+    "temperature_K": 3095.614025905748,
+    "time_s": 0.0,
+    "altitude_m": 1.97381824428344e-12,
+    "source_csv_row": 2,
+    "max_heat_flux_W_m2": 4165434.1076719873,
+    "max_heat_flux_time_s": 0.0,
+    "max_heat_flux_altitude_m": 1.97381824428344e-12
+  },
+  "peak_noncatalytic": {
+    "temperature_K": 3071.926408720649,
+    "time_s": 0.0,
+    "altitude_m": 1.97381824428344e-12,
+    "source_csv_row": 2,
+    "max_heat_flux_W_m2": 4039394.556350046,
+    "max_heat_flux_time_s": 0.0,
+    "max_heat_flux_altitude_m": 1.97381824428344e-12
+  }
+}
